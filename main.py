@@ -1,129 +1,59 @@
 """
-Course project
-This program should find a solution of linear algebraic equations system
-using methods of Jordana-Gauss and Gauss-Seidel
+Курсовой проект
+По теме: разработка программы решения системы линейный уравнений:
+    - методом Гаусса - Жордана
+    - методом Гаусса - Зейделя
+Язык: Python 3.7
+Среда: PyCharm
+Название программы: main.py
+Разработал: Симаньков А.В.
+Дата: 31.03.2019
+Версия: v 1.0
+
+Задание:
+Разработать программу, решающее систему линейных алшебраических уравнений
+методами Жордана - Гаусса и Гаусса - Зейделя
+
+Описание алгоритма:
+1)Создание объекта класса Matrix
+2) Запрос исходных данных от пользователя
+    а)Ввод пользователем размерности матрицы
+    б)Ввод пользователем точности вычислений
+    в)Ввод пользователем значений
+3)Вывод построенной расширенной матрицы
+4)Запрос выбора пользователем методом, которым будет решаться СЛАУ
+5)Выввод результатов выполнения программы
+
+Подпрограмма:
+class_matrix.py - Класс матрица, хранящая в себе все необходимые данные и
+весь необходимый функционал
+
+Использованные переменные:
+matrix - объект класса Matrix
+answer - решение пользователя какой метод исполььзовать
 """
-
-from random import randrange
-
-
-class Matrix(list):
-    def __init__(self, size=0):
-        self.__dimension = size
-        self.__coefficients = [[0 for element in range(size)] for row in range(size)]
-        self.__answers = [0 for ans in range(size)]
-
-    def get_coefficients(self) -> list:
-        """
-        :return: coefficients
-        """
-        return self.__coefficients
-
-    def get_answers(self) -> list:
-        """
-        :return: answers
-        """
-        return self.__answers
-
-    def get_extended_matrix(self) -> list:
-        """
-        :return: extended matrix
-        """
-        out = self.__coefficients
-        out.append(self.__answers)
-        return out
-
-    def set_coefficients(self, coefs: list):
-        """
-        set coefficients list needs
-        :param coefs: list of lists of coefficients
-        :return:
-        """
-        self.__coefficients = coefs
-
-    def set_answers(self, ans: list):
-        """
-        set answers, list needs
-        :param ans: list of answers
-        """
-        self.__answers = ans
-
-    def generate_rand_matrix(self, low=0, high=10):
-        """
-        generation random integer coefficients and answers
-        :param low: left bound of the set
-        :param high: right bound of the set
-        """
-        for line in range(self.__dimension):
-            for column in range(self.__dimension):
-                self.__coefficients[line][column] = randrange(low, high)
-        self.__answers = [randrange(low, high) for el in range(self.__dimension)]
-
-    def print_matrix(self):
-        """
-        simple printing matrix in command line
-        """
-        for line in self.__coefficients:
-            for elem in line:
-                print(f'{elem:<5}', end='')
-            print()
-        print()
-
-    def print_extended_matrix(self):
-        """
-        simple printing extended matrix in command line
-        """
-        for line_index in range(self.__dimension):
-            print('|', end='')
-            for column_index in range(self.__dimension):
-                print(f'{self.__coefficients[line_index][column_index]:^5}', end='')
-            if self.__dimension // 2 is line_index:
-                print(f'| = |{self.__answers[line_index]:^5}|')
-            else:
-                print(f'|   |{self.__answers[line_index]:^5}|')
-        print()
-
-    def swap_lines(self, index_1=0, index_2=0):
-        """
-        swapping lines
-        :param index_1: index of line 1
-        :param index_2: index of line 2
-        """
-        temp = self.__coefficients[index_1]
-        self.__coefficients[index_1] = self.__coefficients[index_2]
-        self.__coefficients[index_2] = temp
-
-        temp = self.__answers[index_1]
-        self.__answers[index_1] = self.__answers[index_2]
-        self.__answers[index_2] = temp
-
-    def adding_lines(self, addend_1, addend_2, number):
-        """
-        adding line 1 with line 2 multiplied on number
-        result gets line 1
-        :param addend_1: index line 1
-        :param addend_2: index line 2
-        :param number: coefficient
-        """
-        for elem_index in range(self.__dimension):
-            self.__coefficients[addend_1][elem_index] += self.__coefficients[addend_2][elem_index] * number
-
-        self.__answers[addend_1] += self.__answers[addend_2] * number
+from class_matrix import Matrix
 
 
-
-if __name__ == "__main__":
-    while True:
-        try:
-            dimension = int(input("write dimension: "))
-        except ValueError as er:
-            print(er)
-            continue
+if __name__ == '__main__':
+    matrix = Matrix()
+    matrix.set_size_user_mode()
+    matrix.set_epsilon_user_mode()
+    #matrix.set_values_user_mode()
+    matrix.generate_rand_float_matrix(-100, 100)
+    matrix.print_extended_matrix()
+    done = False
+    print("1 - Gauss Seidel method")
+    print("2 - Jordana Gauss method")
+    while not done:
+        answer = input("Choose method that you want use (print digit): ")
+        if answer == '1':
+            for elem in matrix.gauss_seidel_method():
+                print(f'X = {elem:^{matrix.epsilon + 5}.{matrix.epsilon}f}', end='')
+            done = True
+        elif answer == '2':
+            for elem in matrix.jordana_gauss_method():
+                print(f'X = {elem:^{matrix.epsilon + 5}.{matrix.epsilon}f}', end='')
+            done = True
         else:
-            break
-
-    matr = Matrix(dimension)
-    matr.generate_rand_matrix(0, 10)
-    matr.print_extended_matrix()
-    
-
+            print('Wrong answer, try again')
