@@ -90,6 +90,8 @@ def set_values(size):
             while True:
                 try:
                     a[i][j] = float(input(f'A[{i+1}, {j+1}]: '))
+                    if a[i][j] < -50 or a[i][j] > 100:              # ОГРАНИЧЕНИЕ НА ВВОД
+                        continue
                 except ValueError as error:
                     print(error)
                     continue
@@ -97,6 +99,8 @@ def set_values(size):
         while True:
             try:
                 y[i] = float(input(f'Y[{i+1}, {size+1}]: '))
+                if y[i] < -50 or y[i] > 100:                        # ОГРАНИЧЕНИЕ НА ВВОД
+                    continue
             except ValueError as error:
                 print(error)
                 continue
